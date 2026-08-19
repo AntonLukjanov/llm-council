@@ -79,6 +79,47 @@ npm run dev
 
 Then open http://localhost:5173 in your browser.
 
+## Connect the Council to ChatGPT with MCP
+
+This fork includes an MCP server with one tool: `ask_council`. It sends a
+question through the same three council stages and returns the Chairman's
+answer plus the aggregate model ranking.
+
+1. Complete the normal setup above, including `OPENROUTER_API_KEY`.
+2. Start the application:
+
+```bash
+./start.sh
+```
+
+3. The local MCP endpoint is now available at:
+
+```text
+http://localhost:8002/mcp
+```
+
+4. ChatGPT cannot connect directly to a `localhost` address. In ChatGPT,
+enable Developer mode and use OpenAI's Secure MCP Tunnel to expose this local
+endpoint. Then add the generated HTTPS MCP address as a connection and start a
+new chat with that connection enabled.
+
+You can also run only the MCP server:
+
+```bash
+uv run --with "mcp>=1.27,<2" python -m backend.mcp_server
+```
+
+Optional server settings:
+
+```bash
+MCP_HOST=127.0.0.1
+MCP_PORT=8002
+```
+
+> **Security:** Keep the server bound to `127.0.0.1` when using the Secure MCP
+> Tunnel. Do not expose it directly to the public internet without adding MCP
+> authentication. Each `ask_council` call uses your OpenRouter credits.
+
 ## Tech Stack
 
 - **Backend:** FastAPI (Python 3.10+), async httpx, OpenRouter API
